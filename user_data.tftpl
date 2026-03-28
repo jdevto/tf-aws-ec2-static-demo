@@ -1,0 +1,42 @@
+#!/bin/bash
+# Column-0 shebang required: indented Terraform heredocs break #!/bin/bash and cloud-init may skip the script.
+set -eux
+%{ if enable_ssm ~}
+# Session Manager: install official SSM Agent RPM (reliable on AL2023 minimal / variant AMIs; dnf repo alone can fail).
+# Do not `dnf install curl` here: AL2023 ships curl-minimal; installing full curl conflicts and aborts the whole script under set -e.
+SSM_RPM=""
+case "$(uname -m)" in
+  x86_64) SSM_RPM="https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm" ;;
+  aarch64) SSM_RPM="https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_arm64/amazon-ssm-agent.rpm" ;;
+  *) echo "Unsupported arch for SSM agent RPM"; exit 1 ;;
+esac
+curl -sS -o /tmp/amazon-ssm-agent.rpm "$SSM_RPM"
+dnf install -y /tmp/amazon-ssm-agent.rpm
+rm -f /tmp/amazon-ssm-agent.rpm
+systemctl daemon-reload
+systemctl enable amazon-ssm-agent
+systemctl restart amazon-ssm-agent
+%{ endif ~}
+dnf install -y nginx
+systemctl enable --now nginx
+install -d -m 755 /usr/share/nginx/html
+IMDS_TOKEN=$(curl -sS -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+PRIVATE_IP=$(curl -sS -H "X-aws-ec2-metadata-token: $IMDS_TOKEN" "http://169.254.169.254/latest/meta-data/local-ipv4")
+AZ=$(curl -sS -H "X-aws-ec2-metadata-token: $IMDS_TOKEN" "http://169.254.169.254/latest/meta-data/placement/availability-zone")
+cat >/usr/share/nginx/html/index.html <<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>EC2 static demo</title></head>
+<body>
+<h1>EC2 static site demo</h1>
+<p>Served by <strong>nginx</strong> on Amazon Linux 2023.</p>
+<p><strong>Availability zone</strong> (IMDSv2): <code>$${AZ}</code></p>
+<p><strong>Instance private IPv4</strong> (from <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html">IMDSv2</a>): <code>$${PRIVATE_IP}</code></p>
+<p>The URL bar may show an <em>ALB</em> DNS name (private backend) or the instance <em>public</em> IP (direct-to-EC2 layout). The values above identify the <strong>EC2 target</strong> that served this page. With the <strong>ALB</strong> and <strong>one instance per AZ</strong>, repeated <code>curl</code> requests can show <strong>different AZ / private IP</strong> as the load balancer rotates.</p>
+</body>
+</html>
+HTML
+cat >/usr/share/nginx/html/robots.txt <<'ROBOTS'
+User-agent: *
+Allow: /
+ROBOTS
