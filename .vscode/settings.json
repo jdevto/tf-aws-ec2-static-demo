@@ -1,0 +1,93 @@
+{
+  "files.associations": {
+    "*.tf": "terraform",
+    "*.tfvars": "terraform",
+    "*.tfstate": "json",
+    "*.tfstate.backup": "json",
+    "*.hcl": "terraform",
+    "*.nomad": "hcl",
+    "*.consul": "hcl",
+    "*.vault": "hcl",
+    "*.dockerfile": "dockerfile",
+    "*.sh.tpl": "shellscript",
+    "docker-compose*.yml": "yaml",
+    "Dockerfile*": "dockerfile"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/.terraform": true,
+    "**/.terraform.lock.hcl": true,
+    "**/terraform.tfstate*": true,
+    "**/.terraform.tfstate.lock.info": true,
+    "__debug_bin": true,
+    "vendor/": true,
+    "go.sum": true
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
+  "files.insertFinalNewline": true,
+  "files.autoSave": "onFocusChange",
+  "search.exclude": {
+    "**/.terraform": true,
+    "**/terraform.tfstate*": true,
+    "**/.terraform.tfstate.lock.info": true
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.rulers": [80, 120],
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 120,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.colorTheme": "Default Dark+",
+  "terraform.codelens.referenceCount": true,
+  "[terraform]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.rulers": [80, 120],
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 120
+  },
+  "[hcl]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+  },
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[yaml]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "davidanson.vscode-markdownlint",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.wordWrap": "on"
+  }
+}

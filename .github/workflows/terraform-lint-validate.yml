@@ -1,0 +1,13 @@
+name: Terraform Lint & Validate
+
+on:
+  pull_request: {}
+permissions:
+  statuses: write
+  checks: write
+  contents: read
+  pull-requests: read
+
+jobs:
+  terraform-lint-validate:
+    uses: actionsforge/actions/.github/workflows/terraform-lint-validate.yml@main
